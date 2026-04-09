@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "mcp__brave-search__brave_web_search",
+      "mcp__tavily__tavily_search",
+      "WebSearch",
+      "WebFetch(domain:uchitel.pro)",
+      "WebFetch(domain:phys-oge.sdamgia.ru)",
+      "WebFetch(domain:maximumtest.ru)",
+      "Bash(netlify --version)",
+      "Bash(npx netlify-cli:*)",
+      "Bash(npm --version)",
+      "Bash(npm install:*)",
+      "Bash(netlify login:*)",
+      "Bash(netlify deploy:*)",
+      "Bash(git --version)",
+      "Bash(gh --version)",
+      "Bash(winget install:*)",
+      "Bash(gh auth:*)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" auth login --web --git-protocol https)"
+    ]
+  }
+}

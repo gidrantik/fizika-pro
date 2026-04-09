@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ФизикаПро — Тема</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">⚡ ФизикаПро</a>
+      <div class="header-right">
+        <span id="header-name" class="student-badge"></span>
+        <button class="btn-ghost" onclick="logout()">Выйти</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="topic-page">
+
+    <!-- Хлебные крошки -->
+    <nav class="breadcrumb">
+      <a href="index.html">Главная</a>
+      <span>›</span>
+      <span id="breadcrumb-exam"></span>
+      <span>›</span>
+      <span id="breadcrumb-topic"></span>
+    </nav>
+
+    <!-- Теория -->
+    <section class="theory-section">
+      <div class="section-tag">📖 Конспект</div>
+      <h1 id="topic-title"></h1>
+      <div id="theory-content" class="theory-content"></div>
+    </section>
+
+    <!-- Формулы -->
+    <section id="formulas-section" class="formulas-section hidden">
+      <div class="section-tag">📐 Ключевые формулы</div>
+      <div id="formulas-list" class="formulas-list"></div>
+    </section>
+
+    <!-- Разделитель -->
+    <div class="divider">
+      <span>Проверь себя</span>
+    </div>
+
+    <!-- Задачи -->
+    <section class="tasks-section">
+      <div class="section-tag">✏️ Практикум</div>
+      <p class="tasks-subtitle">Реши задачи на черновике и введи ответы в поля</p>
+
+      <div id="tasks-list" class="tasks-list"></div>
+
+      <div class="submit-area">
+        <button id="submit-btn" class="btn-primary btn-large" onclick="checkAnswers()">
+          Проверить ответы
+        </button>
+        <button id="reset-btn" class="btn-ghost hidden" onclick="resetQuiz()">
+          Попробовать снова
+        </button>
+      </div>
+    </section>
+
+    <!-- Результат -->
+    <section id="result-section" class="result-section hidden">
+      <div id="result-card" class="result-card">
+        <div id="result-score" class="result-score"></div>
+        <div id="result-message" class="result-message"></div>
+        <div id="result-breakdown" class="result-breakdown"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/quiz.js"></script>
+</body>
+</html>
