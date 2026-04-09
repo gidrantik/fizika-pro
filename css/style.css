@@ -521,6 +521,18 @@ a:hover { text-decoration: underline; }
   color: var(--text);
 }
 
+/* Картинка к задаче */
+.task-image {
+  display: block;
+  max-width: 100%;
+  width: auto;
+  max-height: 280px;
+  margin: 12px 0 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: #111;
+}
+
 .task-answer-row {
   display: flex;
   align-items: center;

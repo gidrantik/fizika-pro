@@ -59,14 +59,15 @@ function renderTopic(exam, data) {
         <div class="task-label">Задача ${i + 1}</div>
       </div>
       <div class="task-text">${task.text}</div>
+      ${task.image ? `<img class="task-image" src="${task.image}" alt="Рисунок к задаче ${i + 1}">` : ''}
       <div class="task-answer-row">
         <span class="answer-label">Ответ:</span>
         <input
           class="answer-input"
           id="answer-${i}"
           type="text"
-          inputmode="decimal"
-          placeholder="Введи число..."
+          inputmode="${task.multiChoice ? 'text' : 'decimal'}"
+          placeholder="${task.multiChoice ? 'Например: 35' : 'Введи число...'}"
           autocomplete="off"
         >
       </div>
@@ -84,11 +85,22 @@ function normalizeAnswer(raw) {
 function answersMatch(userRaw, correct) {
   const user = normalizeAnswer(userRaw);
   const ref  = String(correct).trim().replace(',', '.');
+
+  // Точное совпадение строк
   if (user === ref) return true;
-  // Сравнение как числа (на случай 3.0 vs 3)
+
+  // Числовое совпадение (3.0 vs 3)
   const uNum = parseFloat(user);
   const rNum = parseFloat(ref);
   if (!isNaN(uNum) && !isNaN(rNum) && uNum === rNum) return true;
+
+  // Две цифры в любом порядке (задачи на множественный выбор: "34" = "43")
+  const uClean = user.replace(/\s/g, '');
+  const rClean = ref.replace(/\s/g, '');
+  if (/^\d{2}$/.test(uClean) && /^\d{2}$/.test(rClean)) {
+    return uClean.split('').sort().join('') === rClean.split('').sort().join('');
+  }
+
   return false;
 }
 
