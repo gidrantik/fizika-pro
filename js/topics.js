@@ -3,7 +3,7 @@
 
 const TOPICS = {
   oge: [
-    { id: 'kinematics',    name: 'Кинематика. Равномерное движение',   taskCount: 16 },
+    { id: 'kinematics',    name: 'Кинематика. Равномерное движение',   taskCount: 13 },
     { id: 'dynamics',      name: 'Динамика. Законы Ньютона',           taskCount: 7 },
   ],
   ege: [

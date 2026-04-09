@@ -524,13 +524,13 @@ a:hover { text-decoration: underline; }
 /* Картинка к задаче */
 .task-image {
   display: block;
-  max-width: 100%;
-  width: auto;
-  max-height: 280px;
+  max-width: 480px;
+  width: 100%;
+  height: auto;
   margin: 12px 0 16px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: #111;
+  background: #ffffff;
+  padding: 10px;
 }
 
 .task-answer-row {
