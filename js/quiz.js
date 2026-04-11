@@ -29,7 +29,7 @@ function renderTopic(exam, data) {
   // Хлебные крошки
   document.getElementById('breadcrumb-exam').textContent  = exam.toUpperCase();
   document.getElementById('breadcrumb-topic').textContent = data.title;
-  document.title = `ФизикаПро — ${data.title}`;
+  document.title = `Физика без боли — ${data.title}`;
 
   // Заголовок
   document.getElementById('topic-title').textContent = data.title;

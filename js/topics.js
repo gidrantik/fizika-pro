@@ -7,6 +7,7 @@ const TOPICS = {
     { id: 'acceleration',  name: 'Кинематика. Равноускоренное движение',     taskCount: 9 },
     { id: 'freefall',      name: 'Кинематика. Свободное падение',            taskCount: 13 },
     { id: 'dynamics',      name: 'Динамика. Законы Ньютона',                 taskCount: 7 },
+    { id: 'circular',      name: 'Кинематика. Движение по окружности',       taskCount: 13 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
