@@ -60,6 +60,7 @@ function renderTopic(exam, data) {
       </div>
       <div class="task-text">${task.text}</div>
       ${task.image ? `<img class="task-image" src="${task.image}" alt="Рисунок к задаче ${i + 1}">` : ''}
+      ${task.images ? task.images.map((src, n) => `<img class="task-image" src="${src}" alt="Рисунок ${n + 1} к задаче ${i + 1}">`).join('') : ''}
       <div class="task-answer-row">
         <span class="answer-label">Ответ:</span>
         <input
