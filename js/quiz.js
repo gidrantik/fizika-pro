@@ -82,7 +82,7 @@ function normalizeAnswer(raw) {
   return raw.trim().replace(',', '.');
 }
 
-function answersMatch(userRaw, correct) {
+function answersMatch(userRaw, correct, unordered = false) {
   const user = normalizeAnswer(userRaw);
   const ref  = String(correct).trim().replace(',', '.');
 
@@ -94,11 +94,14 @@ function answersMatch(userRaw, correct) {
   const rNum = parseFloat(ref);
   if (!isNaN(uNum) && !isNaN(rNum) && uNum === rNum) return true;
 
-  // Две цифры в любом порядке (задачи на множественный выбор: "34" = "43")
-  const uClean = user.replace(/\s/g, '');
-  const rClean = ref.replace(/\s/g, '');
-  if (/^\d{2}$/.test(uClean) && /^\d{2}$/.test(rClean)) {
-    return uClean.split('').sort().join('') === rClean.split('').sort().join('');
+  // Две цифры в любом порядке — только для multiChoice задач
+  // (задачи на соответствие требуют строгого порядка!)
+  if (unordered) {
+    const uClean = user.replace(/\s/g, '');
+    const rClean = ref.replace(/\s/g, '');
+    if (/^\d{2}$/.test(uClean) && /^\d{2}$/.test(rClean)) {
+      return uClean.split('').sort().join('') === rClean.split('').sort().join('');
+    }
   }
 
   return false;
@@ -119,7 +122,7 @@ function checkAnswers() {
 
     input.disabled = true;
 
-    const isCorrect = answersMatch(userVal, task.answer);
+    const isCorrect = answersMatch(userVal, task.answer, !!task.multiChoice);
     results.push({ taskId: i + 1, correct: isCorrect, userAnswer: userVal });
 
     if (isCorrect) {
