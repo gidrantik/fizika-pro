@@ -9,6 +9,7 @@ const TOPICS = {
     { id: 'dynamics',      name: 'Динамика. Масса и плотность вещества',     taskCount: 10 },
     { id: 'circular',      name: 'Кинематика. Движение по окружности',       taskCount: 13 },
     { id: 'newton',        name: 'Динамика. Законы Ньютона',                 taskCount: 13 },
+    { id: 'friction',      name: 'Динамика. Сила трения',                    taskCount: 5  },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
