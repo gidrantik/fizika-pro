@@ -11,6 +11,7 @@ const TOPICS = {
     { id: 'newton',        name: 'Динамика. Законы Ньютона',                 taskCount: 13 },
     { id: 'friction',      name: 'Динамика. Сила трения',                    taskCount: 5  },
     { id: 'deformation',   name: 'Динамика. Деформация. Закон Гука',          taskCount: 9  },
+    { id: 'momentum',      name: 'Динамика. Закон сохранения импульса',       taskCount: 11 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
