@@ -14,6 +14,7 @@ const TOPICS = {
     { id: 'momentum',      name: 'Динамика. Закон сохранения импульса',       taskCount: 11 },
     { id: 'work',          name: 'Работа и мощность',                         taskCount: 12 },
     { id: 'energy',        name: 'Кинетическая и потенциальная энергия',      taskCount: 9  },
+    { id: 'mechenergy',    name: 'Закон сохранения механической энергии',     taskCount: 12 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
