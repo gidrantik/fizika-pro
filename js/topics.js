@@ -15,6 +15,7 @@ const TOPICS = {
     { id: 'work',          name: 'Работа и мощность',                         taskCount: 12 },
     { id: 'energy',        name: 'Кинетическая и потенциальная энергия',      taskCount: 9  },
     { id: 'mechenergy',    name: 'Закон сохранения механической энергии',     taskCount: 12 },
+    { id: 'mechanisms',    name: 'Простые механизмы. Рычаг и блок',           taskCount: 13 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
