@@ -16,7 +16,7 @@ const TOPICS = {
     { id: 'energy',        name: 'Кинетическая и потенциальная энергия',      taskCount: 9  },
     { id: 'mechenergy',    name: 'Закон сохранения механической энергии',     taskCount: 12 },
     { id: 'mechanisms',    name: 'Простые механизмы. Рычаг и блок',           taskCount: 13 },
-    { id: 'pressure',      name: 'Давление. Закон Паскаля. Архимедова сила',  taskCount: 16 },
+    { id: 'pressure',      name: 'Давление. Закон Паскаля. Архимедова сила',  taskCount: 10 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
