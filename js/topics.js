@@ -21,6 +21,7 @@ const TOPICS = {
     { id: 'oscillations',  name: 'Механические колебания, волны и звук',        taskCount: 10 },
     { id: 'mkt',           name: 'МКТ. Строение вещества',                      taskCount: 10 },
     { id: 'heat',          name: 'Тепловые явления. Виды теплопередачи',         taskCount: 10 },
+    { id: 'heat_quantity', name: 'Количество теплоты. Удельная теплоёмкость',    taskCount: 10 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
