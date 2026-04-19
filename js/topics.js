@@ -19,7 +19,7 @@ const TOPICS = {
     { id: 'pressure',      name: 'Давление. Закон Паскаля. Архимедова сила',  taskCount: 10 },
     { id: 'archimedes',    name: 'Закон Архимеда. Плавание тел',               taskCount: 11 },
     { id: 'oscillations',  name: 'Механические колебания, волны и звук',        taskCount: 10 },
-    { id: 'mkt',           name: 'МКТ. Строение вещества',                      taskCount: 4  },
+    { id: 'mkt',           name: 'МКТ. Строение вещества',                      taskCount: 10 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
