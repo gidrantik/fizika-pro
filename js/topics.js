@@ -18,6 +18,7 @@ const TOPICS = {
     { id: 'mechanisms',    name: 'Простые механизмы. Рычаг и блок',           taskCount: 13 },
     { id: 'pressure',      name: 'Давление. Закон Паскаля. Архимедова сила',  taskCount: 10 },
     { id: 'archimedes',    name: 'Закон Архимеда. Плавание тел',               taskCount: 11 },
+    { id: 'oscillations',  name: 'Механические колебания, волны и звук',        taskCount: 10 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
