@@ -23,6 +23,7 @@ const TOPICS = {
     { id: 'heat',          name: 'Тепловые явления. Виды теплопередачи',         taskCount: 10 },
     { id: 'heat_quantity', name: 'Количество теплоты. Удельная теплоёмкость',    taskCount: 13 },
     { id: 'heat_balance',  name: 'Уравнение теплового баланса',                  taskCount: 7  },
+    { id: 'evaporation',   name: 'Испарение. Конденсация. Влажность',            taskCount: 9  },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
