@@ -25,6 +25,17 @@ async function loadTopic() {
   renderTopic(exam, currentTopic);
 }
 
+// Определяет подсказку в поле ввода:
+// multiChoice  → "Например: 35"
+// табличный код → "Например: 43"
+// числовой ответ → "Введи число..."
+function getAnswerPlaceholder(task) {
+  if (task.multiChoice) return 'Например: 35';
+  const ans = String(task.answer);
+  if (/^[1-4]{2}$/.test(ans)) return `Например: ${ans}`;
+  return 'Введи число...';
+}
+
 function renderTopic(exam, data) {
   // Хлебные крошки
   document.getElementById('breadcrumb-exam').textContent  = exam.toUpperCase();
@@ -52,29 +63,38 @@ function renderTopic(exam, data) {
 
   // Задачи
   const tasksList = document.getElementById('tasks-list');
-  tasksList.innerHTML = data.tasks.map((task, i) => `
+  tasksList.innerHTML = data.tasks.map((task, i) => {
+    const placeholder = getAnswerPlaceholder(task);
+    const inputmode   = task.multiChoice ? 'text' : 'decimal';
+    const imgFallback = `onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<p class=\\"img-missing\\">⚠️ Изображение недоступно</p>')"`;
+    const img  = task.image
+      ? `<img class="task-image" src="${task.image}" alt="Рисунок к задаче ${i + 1}" ${imgFallback}>`
+      : '';
+    const imgs = task.images
+      ? task.images.map((src, n) => `<img class="task-image" src="${src}" alt="Рисунок ${n + 1} к задаче ${i + 1}" ${imgFallback}>`).join('')
+      : '';
+    return `
     <div class="task-item" id="task-${i}">
       <div class="task-header">
         <div class="task-num" id="num-${i}">${i + 1}</div>
         <div class="task-label">Задача ${i + 1}</div>
       </div>
       <div class="task-text">${task.text}</div>
-      ${task.image ? `<img class="task-image" src="${task.image}" alt="Рисунок к задаче ${i + 1}">` : ''}
-      ${task.images ? task.images.map((src, n) => `<img class="task-image" src="${src}" alt="Рисунок ${n + 1} к задаче ${i + 1}">`).join('') : ''}
+      ${img}${imgs}
       <div class="task-answer-row">
         <span class="answer-label">Ответ:</span>
         <input
           class="answer-input"
           id="answer-${i}"
           type="text"
-          inputmode="${task.multiChoice ? 'text' : 'decimal'}"
-          placeholder="${task.multiChoice ? 'Например: 35' : 'Введи число...'}"
+          inputmode="${inputmode}"
+          placeholder="${placeholder}"
           autocomplete="off"
         >
       </div>
       <div class="task-feedback" id="feedback-${i}"></div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 // ===== ПРОВЕРКА ОТВЕТОВ =====

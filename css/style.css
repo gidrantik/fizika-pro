@@ -519,6 +519,7 @@ a:hover { text-decoration: underline; }
   line-height: 1.7;
   margin-bottom: 16px;
   color: var(--text);
+  white-space: pre-line;
 }
 
 /* Картинка к задаче */
@@ -531,6 +532,15 @@ a:hover { text-decoration: underline; }
   border-radius: var(--radius-sm);
   background: #ffffff;
   padding: 10px;
+}
+
+.img-missing {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 8px 12px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  margin: 12px 0 16px;
 }
 
 .task-answer-row {

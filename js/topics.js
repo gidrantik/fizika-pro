@@ -5,7 +5,7 @@ const TOPICS = {
   oge: [
     { id: 'kinematics',    name: 'Кинематика. Равномерное движение',         taskCount: 13 },
     { id: 'acceleration',  name: 'Кинематика. Равноускоренное движение',     taskCount: 9 },
-    { id: 'freefall',      name: 'Кинематика. Свободное падение',            taskCount: 13 },
+    { id: 'freefall',      name: 'Кинематика. Свободное падение',            taskCount: 12 },
     { id: 'dynamics',      name: 'Динамика. Масса и плотность вещества',     taskCount: 10 },
     { id: 'circular',      name: 'Кинематика. Движение по окружности',       taskCount: 13 },
     { id: 'newton',        name: 'Динамика. Законы Ньютона',                 taskCount: 13 },

@@ -44,10 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
     showDashboard();
   }
 
-  // Хедер на topic.html
+  // Хедер на topic.html + защита от анонимного доступа
   const badge = document.getElementById('header-name');
-  if (badge && getStudentName()) {
-    badge.textContent = getStudentName();
+  if (badge) {
+    const name = getStudentName();
+    if (!name) {
+      window.location.href = 'index.html';
+      return;
+    }
+    badge.textContent = name;
   }
 });
 
