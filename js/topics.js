@@ -31,6 +31,7 @@ const TOPICS = {
     { id: 'ohm',           name: 'Закон Ома. Последовательное и параллельное соединение', taskCount: 27 },
     { id: 'joule',         name: 'Работа и мощность тока. Закон Джоуля-Ленца',           taskCount: 20 },
     { id: 'magnetic',      name: 'Магнитное поле. Электромагнитная индукция',            taskCount: 17 },
+    { id: 'optics',        name: 'Электромагнитные волны. Оптика',                        taskCount: 28 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
