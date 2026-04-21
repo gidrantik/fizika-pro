@@ -36,6 +36,11 @@ function getAnswerPlaceholder(task) {
   return 'Введи число...';
 }
 
+function imgError(el) {
+  el.style.display = 'none';
+  el.insertAdjacentHTML('afterend', '<p class="img-missing">⚠️ Изображение недоступно</p>');
+}
+
 function renderTopic(exam, data) {
   // Хлебные крошки
   document.getElementById('breadcrumb-exam').textContent  = exam.toUpperCase();
@@ -66,12 +71,11 @@ function renderTopic(exam, data) {
   tasksList.innerHTML = data.tasks.map((task, i) => {
     const placeholder = getAnswerPlaceholder(task);
     const inputmode   = task.multiChoice ? 'text' : 'decimal';
-    const imgFallback = `onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<p class=\\"img-missing\\">⚠️ Изображение недоступно</p>')"`;
     const img  = task.image
-      ? `<img class="task-image" src="${task.image}" alt="Рисунок к задаче ${i + 1}" ${imgFallback}>`
+      ? `<img class="task-image" src="${task.image}" alt="Рисунок к задаче ${i + 1}" onerror="imgError(this)">`
       : '';
     const imgs = task.images
-      ? task.images.map((src, n) => `<img class="task-image" src="${src}" alt="Рисунок ${n + 1} к задаче ${i + 1}" ${imgFallback}>`).join('')
+      ? task.images.map((src, n) => `<img class="task-image" src="${src}" alt="Рисунок ${n + 1} к задаче ${i + 1}" onerror="imgError(this)">`).join('')
       : '';
     return `
     <div class="task-item" id="task-${i}">
