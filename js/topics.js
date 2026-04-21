@@ -29,6 +29,7 @@ const TOPICS = {
     { id: 'charges',       name: 'Электризация. Электрические заряды. Закон Кулона', taskCount: 13 },
     { id: 'current',       name: 'Сила тока. Напряжение. Сопротивление',             taskCount: 25 },
     { id: 'ohm',           name: 'Закон Ома. Последовательное и параллельное соединение', taskCount: 27 },
+    { id: 'joule',         name: 'Работа и мощность тока. Закон Джоуля-Ленца',           taskCount: 20 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
