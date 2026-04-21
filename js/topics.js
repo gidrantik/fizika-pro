@@ -26,7 +26,7 @@ const TOPICS = {
     { id: 'evaporation',   name: 'Испарение. Конденсация. Влажность',            taskCount: 9  },
     { id: 'melting',       name: 'Плавление и кристаллизация',                   taskCount: 10 },
     { id: 'heat_engine',   name: 'КПД тепловых двигателей. Сгорание топлива',    taskCount: 6  },
-    { id: 'charges',       name: 'Электризация. Электрические заряды. Закон Кулона', taskCount: 12 },
+    { id: 'charges',       name: 'Электризация. Электрические заряды. Закон Кулона', taskCount: 13 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
