@@ -30,6 +30,7 @@ const TOPICS = {
     { id: 'current',       name: 'Сила тока. Напряжение. Сопротивление',             taskCount: 25 },
     { id: 'ohm',           name: 'Закон Ома. Последовательное и параллельное соединение', taskCount: 27 },
     { id: 'joule',         name: 'Работа и мощность тока. Закон Джоуля-Ленца',           taskCount: 20 },
+    { id: 'magnetic',      name: 'Магнитное поле. Электромагнитная индукция',            taskCount: 17 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
