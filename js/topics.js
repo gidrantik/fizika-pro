@@ -28,6 +28,7 @@ const TOPICS = {
     { id: 'heat_engine',   name: 'КПД тепловых двигателей. Сгорание топлива',    taskCount: 6  },
     { id: 'charges',       name: 'Электризация. Электрические заряды. Закон Кулона', taskCount: 13 },
     { id: 'current',       name: 'Сила тока. Напряжение. Сопротивление',             taskCount: 25 },
+    { id: 'ohm',           name: 'Закон Ома. Последовательное и параллельное соединение', taskCount: 27 },
   ],
   ege: [
     { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
