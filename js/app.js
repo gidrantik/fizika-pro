@@ -60,15 +60,17 @@ document.addEventListener('DOMContentLoaded', () => {
     showDashboard();
   }
 
-  // Хедер на topic.html + защита от анонимного доступа
-  const badge = document.getElementById('header-name');
-  if (badge) {
-    const name = getStudentName();
+  // Хедер + защита от анонимного доступа — только на topic.html
+  // (на index.html #name-screen есть, и там редирект создавал бы цикл)
+  const isTopicPage = !document.getElementById('name-screen');
+  if (isTopicPage) {
+    const badge = document.getElementById('header-name');
+    const name  = getStudentName();
     if (!name) {
       window.location.href = 'index.html';
       return;
     }
-    badge.textContent = name;
+    if (badge) badge.textContent = name;
   }
 });
 
