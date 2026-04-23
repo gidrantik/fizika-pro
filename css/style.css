@@ -467,7 +467,35 @@ a:hover { text-decoration: underline; }
 .tasks-subtitle {
   color: var(--text-muted);
   font-size: 15px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
+}
+
+.progress-wrap {
+  margin: 0 0 24px;
+  position: sticky;
+  top: 12px;
+  z-index: 5;
+  background: var(--bg, #fff);
+  padding: 10px 0;
+}
+.progress-track {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4caf50, #2196f3);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+.progress-text {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: right;
 }
 
 .tasks-list {

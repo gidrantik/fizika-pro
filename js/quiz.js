@@ -25,15 +25,28 @@ async function loadTopic() {
   renderTopic(exam, currentTopic);
 }
 
-// Определяет подсказку в поле ввода:
-// multiChoice  → "Например: 35"
-// табличный код → "Например: 43"
+// Определяет подсказку в поле ввода (НЕ палит правильный ответ):
+// multiChoice  → "Две цифры, например 34"
+// 3-значный код соответствия → "Три цифры, например 312"
+// 2-значный код соответствия → "Две цифры (по порядку)"
 // числовой ответ → "Введи число..."
 function getAnswerPlaceholder(task) {
-  if (task.multiChoice) return 'Например: 35';
+  if (task.multiChoice) return 'Две цифры, например 34';
   const ans = String(task.answer);
-  if (/^[1-4]{2}$/.test(ans)) return `Например: ${ans}`;
+  if (/^[1-5]{3}$/.test(ans)) return 'Три цифры, например 312';
+  if (/^[1-5]{2}$/.test(ans)) return 'Две цифры (по порядку)';
   return 'Введи число...';
+}
+
+// Экранирование HTML для безопасного вывода пользовательского текста
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function imgError(el) {
@@ -60,8 +73,8 @@ function renderTopic(exam, data) {
     sec.classList.remove('hidden');
     list.innerHTML = data.formulas.map(f => `
       <div class="formula-item">
-        <div class="formula-expr">${f.expr}</div>
-        <div class="formula-desc">${f.desc}</div>
+        <div class="formula-expr">${escapeHtml(f.expr)}</div>
+        <div class="formula-desc">${escapeHtml(f.desc)}</div>
       </div>
     `).join('');
   }
@@ -72,10 +85,10 @@ function renderTopic(exam, data) {
     const placeholder = getAnswerPlaceholder(task);
     const inputmode   = task.multiChoice ? 'text' : 'decimal';
     const img  = task.image
-      ? `<img class="task-image" src="${task.image}" alt="Рисунок к задаче ${i + 1}" onerror="imgError(this)">`
+      ? `<img class="task-image" src="${escapeHtml(task.image)}" alt="" onerror="imgError(this)">`
       : '';
     const imgs = task.images
-      ? task.images.map((src, n) => `<img class="task-image" src="${src}" alt="Рисунок ${n + 1} к задаче ${i + 1}" onerror="imgError(this)">`).join('')
+      ? task.images.map((src) => `<img class="task-image" src="${escapeHtml(src)}" alt="" onerror="imgError(this)">`).join('')
       : '';
     return `
     <div class="task-item" id="task-${i}">
@@ -83,7 +96,7 @@ function renderTopic(exam, data) {
         <div class="task-num" id="num-${i}">${i + 1}</div>
         <div class="task-label">Задача ${i + 1}</div>
       </div>
-      <div class="task-text">${task.text}</div>
+      <div class="task-text">${escapeHtml(task.text)}</div>
       ${img}${imgs}
       <div class="task-answer-row">
         <span class="answer-label">Ответ:</span>
@@ -92,13 +105,42 @@ function renderTopic(exam, data) {
           id="answer-${i}"
           type="text"
           inputmode="${inputmode}"
-          placeholder="${placeholder}"
+          placeholder="${escapeHtml(placeholder)}"
           autocomplete="off"
+          aria-label="Ответ на задачу ${i + 1}"
         >
       </div>
-      <div class="task-feedback" id="feedback-${i}"></div>
+      <div class="task-feedback" id="feedback-${i}" aria-live="polite"></div>
     </div>`;
   }).join('');
+
+  // Прогресс-бар — подключаем события на инпуты
+  attachProgressTracker();
+  updateProgress();
+}
+
+// ===== ПРОГРЕСС-БАР =====
+
+function attachProgressTracker() {
+  if (!currentTopic) return;
+  currentTopic.tasks.forEach((_, i) => {
+    const inp = document.getElementById(`answer-${i}`);
+    if (inp) inp.addEventListener('input', updateProgress);
+  });
+}
+
+function updateProgress() {
+  if (!currentTopic) return;
+  const total = currentTopic.tasks.length;
+  let filled = 0;
+  for (let i = 0; i < total; i++) {
+    const inp = document.getElementById(`answer-${i}`);
+    if (inp && inp.value.trim() !== '') filled++;
+  }
+  const bar = document.getElementById('progress-bar');
+  const txt = document.getElementById('progress-text');
+  if (bar) bar.style.width = Math.round((filled / total) * 100) + '%';
+  if (txt) txt.textContent = `Заполнено: ${filled} / ${total}`;
 }
 
 // ===== ПРОВЕРКА ОТВЕТОВ =====
@@ -110,6 +152,9 @@ function normalizeAnswer(raw) {
 function answersMatch(userRaw, correct, unordered = false) {
   const user = normalizeAnswer(userRaw);
   const ref  = String(correct).trim().replace(',', '.');
+
+  // Пустой ответ никогда не считается верным
+  if (user === '') return false;
 
   // Точное совпадение строк
   if (user === ref) return true;
@@ -135,6 +180,16 @@ function answersMatch(userRaw, correct, unordered = false) {
 function checkAnswers() {
   if (!currentTopic) return;
 
+  // Если не заполнено ни одного поля — предупреждаем
+  const anyFilled = currentTopic.tasks.some((_, i) => {
+    const inp = document.getElementById(`answer-${i}`);
+    return inp && inp.value.trim() !== '';
+  });
+  if (!anyFilled) {
+    alert('Ты не ввёл ни одного ответа. Реши хотя бы одну задачу перед проверкой.');
+    return;
+  }
+
   let correct = 0;
   const results = [];
 
@@ -154,16 +209,19 @@ function checkAnswers() {
       correct++;
       taskEl.classList.add('correct');
       numEl.classList.add('correct');
-      feedback.innerHTML = `<div class="feedback-correct">✓ Верно!</div>`;
+      feedback.innerHTML = `
+        <div class="feedback-correct">✓ Верно!</div>
+        ${task.hint ? `<div class="feedback-hint">💡 ${escapeHtml(task.hint)}</div>` : ''}
+      `;
     } else {
       taskEl.classList.add('wrong');
       numEl.classList.add('wrong');
       feedback.innerHTML = `
         <div class="feedback-wrong">
-          ✗ Неверно. Твой ответ: <strong>${userVal || '—'}</strong> —
-          правильный: <span class="correct-answer">${task.answer}</span>
+          ✗ Неверно. Твой ответ: <strong>${escapeHtml(userVal) || '—'}</strong> —
+          правильный: <span class="correct-answer">${escapeHtml(task.answer)}</span>
         </div>
-        ${task.hint ? `<div class="feedback-hint">💡 ${task.hint}</div>` : ''}
+        ${task.hint ? `<div class="feedback-hint">💡 ${escapeHtml(task.hint)}</div>` : ''}
       `;
     }
   });
@@ -269,6 +327,7 @@ async function sendToSupabase(record) {
       },
       body: JSON.stringify({
         student_name: record.student,
+        device_id:    (typeof getDeviceId === 'function') ? getDeviceId() : null,
         exam:         record.exam,
         topic_id:     record.topic,
         topic_name:   record.topicName,

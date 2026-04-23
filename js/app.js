@@ -4,16 +4,32 @@ function getStudentName() {
   return localStorage.getItem('studentName') || '';
 }
 
+// Постоянный идентификатор устройства. Привязывает имя к конкретному браузеру,
+// чтобы с одного устройства нельзя было писать результаты от чужого имени.
+function getDeviceId() {
+  let id = localStorage.getItem('deviceId');
+  if (!id) {
+    id = (crypto.randomUUID && crypto.randomUUID()) ||
+         ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+           (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4)).toString(16));
+    localStorage.setItem('deviceId', id);
+  }
+  return id;
+}
+
 function startSession() {
   const input = document.getElementById('student-name');
-  const name = input.value.trim();
-  if (!name) {
+  const raw = input.value.trim();
+  // Ограничение длины, совпадающее с проверкой на сервере (2..40)
+  const name = raw.slice(0, 40);
+  if (name.length < 2) {
     input.focus();
     input.style.borderColor = 'var(--red)';
     setTimeout(() => input.style.borderColor = '', 1200);
     return;
   }
   localStorage.setItem('studentName', name);
+  getDeviceId(); // инициализируем device_id при первом входе
   showDashboard();
 }
 

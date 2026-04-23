@@ -34,7 +34,5 @@ const TOPICS = {
     { id: 'optics',        name: 'Электромагнитные волны. Оптика',                        taskCount: 28 },
     { id: 'quantum',       name: 'Квантовые явления. Строение атома',                     taskCount: 30 },
   ],
-  ege: [
-    { id: 'kinematics_ege', name: 'Кинематика (ЕГЭ)',                  taskCount: 10 },
-  ]
+  ege: []
 };
