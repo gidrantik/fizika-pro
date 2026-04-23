@@ -498,6 +498,32 @@ a:hover { text-decoration: underline; }
   text-align: right;
 }
 
+.draft-notice {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(33, 150, 243, 0.1);
+  border: 1px solid rgba(33, 150, 243, 0.3);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text, #333);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.draft-clear {
+  background: transparent;
+  border: 1px solid rgba(33, 150, 243, 0.5);
+  color: #2196f3;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.draft-clear:hover {
+  background: rgba(33, 150, 243, 0.15);
+}
+
 .tasks-list {
   display: flex;
   flex-direction: column;

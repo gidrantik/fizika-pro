@@ -1,6 +1,59 @@
 // ===== ЗАГРУЗКА ТЕМЫ =====
 
 let currentTopic = null;
+let currentExam  = null;
+let currentTopicId = null;
+
+// Ключ черновика для текущей темы. Черновик живёт 14 дней.
+function draftKey() {
+  return `draft:${currentExam}:${currentTopicId}`;
+}
+const DRAFT_TTL_MS = 14 * 24 * 60 * 60 * 1000;
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(draftKey());
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (!data || !data.savedAt) return null;
+    if (Date.now() - new Date(data.savedAt).getTime() > DRAFT_TTL_MS) {
+      localStorage.removeItem(draftKey());
+      return null;
+    }
+    return data.answers || null;
+  } catch {
+    return null;
+  }
+}
+
+function saveDraft() {
+  if (!currentTopic) return;
+  const answers = {};
+  let hasAny = false;
+  currentTopic.tasks.forEach((_, i) => {
+    const inp = document.getElementById(`answer-${i}`);
+    if (inp && inp.value !== '') {
+      answers[i] = inp.value;
+      hasAny = true;
+    }
+  });
+  if (!hasAny) {
+    localStorage.removeItem(draftKey());
+    return;
+  }
+  try {
+    localStorage.setItem(draftKey(), JSON.stringify({
+      answers,
+      savedAt: new Date().toISOString()
+    }));
+  } catch {
+    /* quota exceeded — молча пропускаем */
+  }
+}
+
+function clearDraft() {
+  try { localStorage.removeItem(draftKey()); } catch {}
+}
 
 async function loadTopic() {
   const params = new URLSearchParams(window.location.search);
@@ -11,6 +64,9 @@ async function loadTopic() {
     window.location.href = 'index.html';
     return;
   }
+
+  currentExam    = exam;
+  currentTopicId = topicId;
 
   try {
     const res = await fetch(`data/${topicId}.json`);
@@ -114,18 +170,65 @@ function renderTopic(exam, data) {
     </div>`;
   }).join('');
 
-  // Прогресс-бар — подключаем события на инпуты
+  // Восстанавливаем черновик (если был)
+  const draft = loadDraft();
+  if (draft) {
+    let restored = 0;
+    Object.keys(draft).forEach(i => {
+      const inp = document.getElementById(`answer-${i}`);
+      if (inp) { inp.value = draft[i]; restored++; }
+    });
+    if (restored > 0) showDraftNotice(restored);
+  }
+
+  // Прогресс-бар + автосохранение на каждый ввод
   attachProgressTracker();
+  updateProgress();
+}
+
+function showDraftNotice(count) {
+  const wrap = document.querySelector('.progress-wrap');
+  if (!wrap || document.getElementById('draft-notice')) return;
+  const n = document.createElement('div');
+  n.id = 'draft-notice';
+  n.className = 'draft-notice';
+  n.innerHTML = `
+    💾 Восстановлены твои ответы (${count} шт.)
+    <button type="button" class="draft-clear" onclick="discardDraft()">Очистить</button>
+  `;
+  wrap.appendChild(n);
+}
+
+function discardDraft() {
+  if (!currentTopic) return;
+  currentTopic.tasks.forEach((_, i) => {
+    const inp = document.getElementById(`answer-${i}`);
+    if (inp && !inp.disabled) inp.value = '';
+  });
+  clearDraft();
+  const n = document.getElementById('draft-notice');
+  if (n) n.remove();
   updateProgress();
 }
 
 // ===== ПРОГРЕСС-БАР =====
 
+// Debounce для saveDraft — не пишем в localStorage на каждое нажатие клавиши
+let draftSaveTimer = null;
+function scheduleDraftSave() {
+  clearTimeout(draftSaveTimer);
+  draftSaveTimer = setTimeout(saveDraft, 400);
+}
+
 function attachProgressTracker() {
   if (!currentTopic) return;
   currentTopic.tasks.forEach((_, i) => {
     const inp = document.getElementById(`answer-${i}`);
-    if (inp) inp.addEventListener('input', updateProgress);
+    if (!inp) return;
+    inp.addEventListener('input', () => {
+      updateProgress();
+      scheduleDraftSave();
+    });
   });
 }
 
@@ -236,6 +339,11 @@ function checkAnswers() {
   // Прокрутка к результату
   document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
 
+  // Задача решена — черновик больше не нужен
+  clearDraft();
+  const notice = document.getElementById('draft-notice');
+  if (notice) notice.remove();
+
   // Сохраняем в localStorage и отправляем статистику
   saveResult(correct, total, results);
 }
@@ -279,6 +387,9 @@ function resetQuiz() {
   document.getElementById('result-section').classList.add('hidden');
   document.getElementById('submit-btn').classList.remove('hidden');
   document.getElementById('reset-btn').classList.add('hidden');
+
+  clearDraft();
+  updateProgress();
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
