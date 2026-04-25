@@ -1,5 +1,9 @@
 // ===== ЗАГРУЗКА ТЕМЫ =====
 
+// Версия данных. Бамп при правках любого JSON в data/.
+// Cache-busting: ученики получают свежие задачи без Ctrl+F5.
+const DATA_VERSION = '20260423d';
+
 let currentTopic = null;
 let currentExam  = null;
 let currentTopicId = null;
@@ -69,7 +73,7 @@ async function loadTopic() {
   currentTopicId = topicId;
 
   try {
-    const res = await fetch(`data/${topicId}.json`);
+    const res = await fetch(`data/${topicId}.json?v=${DATA_VERSION}`);
     if (!res.ok) throw new Error('not found');
     currentTopic = await res.json();
   } catch {
