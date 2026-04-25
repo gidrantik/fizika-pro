@@ -2,7 +2,7 @@
 
 // Версия данных. Бамп при правках любого JSON в data/.
 // Cache-busting: ученики получают свежие задачи без Ctrl+F5.
-const DATA_VERSION = '20260423d';
+const DATA_VERSION = '20260423e';
 
 let currentTopic = null;
 let currentExam  = null;
