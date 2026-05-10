@@ -2,7 +2,7 @@
 
 // Версия данных. Бамп при правках любого JSON в data/.
 // Cache-busting: ученики получают свежие задачи без Ctrl+F5.
-const DATA_VERSION = '20260423e';
+const DATA_VERSION = '20260510a';
 
 let currentTopic = null;
 let currentExam  = null;
@@ -432,29 +432,45 @@ function saveResult(correct, total, results) {
 // ===== ОТПРАВКА В SUPABASE =====
 
 async function sendToSupabase(record) {
+  const payload = {
+    student_name: record.student,
+    device_id:    (typeof getDeviceId === 'function') ? getDeviceId() : null,
+    exam:         record.exam,
+    topic_id:     record.topic,
+    topic_name:   record.topicName,
+    correct:      record.correct,
+    total:        record.total,
+    pct:          record.pct,
+    details:      record.details
+  };
+
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/results`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/results`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal'
       },
-      body: JSON.stringify({
-        student_name: record.student,
-        device_id:    (typeof getDeviceId === 'function') ? getDeviceId() : null,
-        exam:         record.exam,
-        topic_id:     record.topic,
-        topic_name:   record.topicName,
-        correct:      record.correct,
-        total:        record.total,
-        pct:          record.pct,
-        details:      record.details
-      })
+      body: JSON.stringify(payload)
     });
+
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      console.warn('[Supabase] результат НЕ записан:', {
+        status: res.status,
+        body,
+        payload
+      });
+      return false;
+    }
+
     console.log('[Supabase] результат отправлен');
+    return true;
   } catch (e) {
     console.warn('[Supabase] ошибка отправки:', e);
+    return false;
   }
 }
 
