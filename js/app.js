@@ -30,6 +30,15 @@ function startSession() {
   }
   localStorage.setItem('studentName', name);
   getDeviceId(); // инициализируем device_id при первом входе
+
+  const params = new URLSearchParams(window.location.search);
+  const exam = params.get('exam');
+  const topicId = params.get('topic');
+  if (exam && topicId && TOPICS[exam]?.some(topic => topic.id === topicId)) {
+    window.location.href = `topic.html?exam=${encodeURIComponent(exam)}&topic=${encodeURIComponent(topicId)}`;
+    return;
+  }
+
   showDashboard();
 }
 
@@ -67,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const badge = document.getElementById('header-name');
     const name  = getStudentName();
     if (!name) {
-      window.location.href = 'index.html';
+      window.location.replace(`index.html${window.location.search}`);
       return;
     }
     if (badge) badge.textContent = name;

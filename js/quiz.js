@@ -2,7 +2,7 @@
 
 // Версия данных. Бамп при правках любого JSON в data/.
 // Cache-busting: ученики получают свежие задачи без Ctrl+F5.
-const DATA_VERSION = '20260510a';
+const DATA_VERSION = '20260925a';
 
 let currentTopic = null;
 let currentExam  = null;
@@ -87,12 +87,14 @@ async function loadTopic() {
 
 // Определяет подсказку в поле ввода (НЕ палит правильный ответ):
 // multiChoice  → "Две цифры, например 34"
+// 4-значный код соответствия → "Четыре цифры (по порядку)"
 // 3-значный код соответствия → "Три цифры, например 312"
 // 2-значный код соответствия → "Две цифры (по порядку)"
 // числовой ответ → "Введи число..."
 function getAnswerPlaceholder(task) {
   if (task.multiChoice) return 'Две цифры, например 34';
   const ans = String(task.answer);
+  if (/^[1-7]{4}$/.test(ans)) return 'Четыре цифры (по порядку)';
   if (/^[1-5]{3}$/.test(ans)) return 'Три цифры, например 312';
   if (/^[1-5]{2}$/.test(ans)) return 'Две цифры (по порядку)';
   return 'Введи число...';
@@ -263,25 +265,20 @@ function answersMatch(userRaw, correct, unordered = false) {
   // Пустой ответ никогда не считается верным
   if (user === '') return false;
 
-  // Точное совпадение строк
-  if (user === ref) return true;
-
-  // Числовое совпадение (3.0 vs 3)
-  const uNum = parseFloat(user);
-  const rNum = parseFloat(ref);
-  if (!isNaN(uNum) && !isNaN(rNum) && uNum === rNum) return true;
-
-  // Две цифры в любом порядке — только для multiChoice задач
-  // (задачи на соответствие требуют строгого порядка!)
   if (unordered) {
     const uClean = user.replace(/\s/g, '');
     const rClean = ref.replace(/\s/g, '');
     if (/^\d{2}$/.test(uClean) && /^\d{2}$/.test(rClean)) {
       return uClean.split('').sort().join('') === rClean.split('').sort().join('');
     }
+    return false;
   }
 
-  return false;
+  if (user === ref) return true;
+
+  // Только полное число: parseFloat('12abc') ошибочно принимал такой ответ за 12.
+  const numberPattern = /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/;
+  return numberPattern.test(user) && numberPattern.test(ref) && Number(user) === Number(ref);
 }
 
 function checkAnswers() {
@@ -296,6 +293,9 @@ function checkAnswers() {
     alert('Ты не ввёл ни одного ответа. Реши хотя бы одну задачу перед проверкой.');
     return;
   }
+
+  clearTimeout(draftSaveTimer);
+  saveDraft();
 
   let correct = 0;
   const results = [];
@@ -343,13 +343,12 @@ function checkAnswers() {
   // Прокрутка к результату
   document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
 
-  // Задача решена — черновик больше не нужен
-  clearDraft();
-  const notice = document.getElementById('draft-notice');
-  if (notice) notice.remove();
-
-  // Сохраняем в localStorage и отправляем статистику
-  saveResult(correct, total, results);
+  // Черновик очищаем только после надёжной записи результата в очередь.
+  if (saveResult(correct, total, results)) {
+    clearDraft();
+    const notice = document.getElementById('draft-notice');
+    if (notice) notice.remove();
+  }
 }
 
 // ===== РЕЗУЛЬТАТ =====
@@ -375,6 +374,7 @@ function showResult(correct, total) {
 // ===== СБРОС =====
 
 function resetQuiz() {
+  clearTimeout(draftSaveTimer);
   currentTopic.tasks.forEach((_, i) => {
     const input    = document.getElementById(`answer-${i}`);
     const taskEl   = document.getElementById(`task-${i}`);
@@ -407,6 +407,7 @@ function saveResult(correct, total, results) {
   const name    = localStorage.getItem('studentName') || 'Аноним';
 
   const record = {
+    id:        newResultId(),
     student:   name,
     exam:      exam,
     topic:     topicId,
@@ -418,60 +419,20 @@ function saveResult(correct, total, results) {
     details:   results
   };
 
-  // История в localStorage
-  const history = JSON.parse(localStorage.getItem('history') || '[]');
-  history.unshift(record);
-  if (history.length > 200) history.pop();
-  localStorage.setItem('history', JSON.stringify(history));
+  if (!queueResult(record)) return false;
 
-  sendToSupabase(record);
-
-  console.log('[Результат сохранён]', record);
-}
-
-// ===== ОТПРАВКА В SUPABASE =====
-
-async function sendToSupabase(record) {
-  const payload = {
-    student_name: record.student,
-    device_id:    (typeof getDeviceId === 'function') ? getDeviceId() : null,
-    exam:         record.exam,
-    topic_id:     record.topic,
-    topic_name:   record.topicName,
-    correct:      record.correct,
-    total:        record.total,
-    pct:          record.pct,
-    details:      record.details
-  };
-
+  // Локальная история нужна ученику; очередь отправки хранится отдельно.
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/results`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      const body = await res.text().catch(() => '');
-      console.warn('[Supabase] результат НЕ записан:', {
-        status: res.status,
-        body,
-        payload
-      });
-      return false;
-    }
-
-    console.log('[Supabase] результат отправлен');
-    return true;
-  } catch (e) {
-    console.warn('[Supabase] ошибка отправки:', e);
-    return false;
+    const history = JSON.parse(localStorage.getItem('history') || '[]');
+    if (!Array.isArray(history)) throw new Error('Некорректная локальная история');
+    history.unshift(record);
+    if (history.length > 200) history.length = 200;
+    localStorage.setItem('history', JSON.stringify(history));
+  } catch (error) {
+    console.warn('[Статистика] история не обновлена, результат остался в очереди:', error);
   }
+
+  return true;
 }
 
 // ===== ИНИЦИАЛИЗАЦИЯ =====

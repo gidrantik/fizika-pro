@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Физика без боли — Подготовка к экзаменам</title>
-  <link rel="stylesheet" href="css/style.css?v=20260510a">
+  <link rel="stylesheet" href="css/style.css?v=20260925a">
 </head>
 <body>
 
@@ -40,6 +40,11 @@
         <p>Переходи в нужный раздел и начинай готовиться</p>
       </section>
 
+      <div class="sync-notice hidden" data-sync-notice role="status" aria-live="polite">
+        <span data-sync-status></span>
+        <button type="button" class="btn-ghost hidden" data-sync-retry>Отправить снова</button>
+      </div>
+
       <div class="exam-cards">
         <div class="exam-card" onclick="showTopics('oge')">
           <div class="exam-badge">9 класс</div>
@@ -66,8 +71,9 @@
     </main>
   </div>
 
-  <script src="config.js?v=20260510a"></script>
-  <script src="js/topics.js?v=20260510a"></script>
-  <script src="js/app.js?v=20260510a"></script>
+  <script src="config.js?v=20260925a"></script>
+  <script src="js/topics.js?v=20260925a"></script>
+  <script src="js/stats.js?v=20260925a"></script>
+  <script src="js/app.js?v=20260925a"></script>
 </body>
 </html>

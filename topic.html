@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Физика без боли — Тема</title>
-  <link rel="stylesheet" href="css/style.css?v=20260510a">
+  <link rel="stylesheet" href="css/style.css?v=20260925a">
 </head>
 <body>
 
@@ -77,13 +77,18 @@
         <div id="result-score" class="result-score"></div>
         <div id="result-message" class="result-message"></div>
         <div id="result-breakdown" class="result-breakdown"></div>
+        <div class="sync-notice hidden" data-sync-notice role="status" aria-live="polite">
+          <span data-sync-status></span>
+          <button type="button" class="btn-ghost hidden" data-sync-retry>Отправить снова</button>
+        </div>
       </div>
     </section>
 
   </main>
 
-  <script src="config.js?v=20260510a"></script>
-  <script src="js/app.js?v=20260510a"></script>
-  <script src="js/quiz.js?v=20260510a"></script>
+  <script src="config.js?v=20260925a"></script>
+  <script src="js/stats.js?v=20260925a"></script>
+  <script src="js/app.js?v=20260925a"></script>
+  <script src="js/quiz.js?v=20260925a"></script>
 </body>
 </html>
